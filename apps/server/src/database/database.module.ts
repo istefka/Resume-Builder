@@ -1,19 +1,10 @@
-import { Module } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { PrismaModule, providePrismaClientExceptionFilter } from "nestjs-prisma";
+import { Global, Module } from "@nestjs/common";
 
-import { Config } from "@/server/config/schema";
+import { DatabaseService } from "./database.service";
 
+@Global()
 @Module({
-  imports: [
-    PrismaModule.forRootAsync({
-      isGlobal: true,
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService<Config>) => ({
-        prismaOptions: { datasourceUrl: configService.get("DATABASE_URL") },
-      }),
-    }),
-  ],
-  providers: [providePrismaClientExceptionFilter()],
+  providers: [DatabaseService],
+  exports: [DatabaseService],
 })
 export class DatabaseModule {}

@@ -10,8 +10,8 @@ export const configSchema = z.object({
   PUBLIC_URL: z.string().url(),
   STORAGE_URL: z.string().url(),
 
-  // Database (Prisma)
-  DATABASE_URL: z.string().url().startsWith("postgresql://"),
+  // Firebase Admin
+  FIREBASE_SERVICE_ACCOUNT_PATH: z.string(),
 
   // Authentication Secrets
   ACCESS_TOKEN_SECRET: z.string(),
@@ -33,21 +33,7 @@ export const configSchema = z.object({
     .refine((url) => url.startsWith("smtp://") || url.startsWith("smtps://"))
     .optional(),
 
-  // Storage
-  STORAGE_ENDPOINT: z.string(),
-  STORAGE_PORT: z.coerce.number(),
-  STORAGE_REGION: z.string().default("us-east-1"),
-  STORAGE_BUCKET: z.string(),
-  STORAGE_ACCESS_KEY: z.string(),
-  STORAGE_SECRET_KEY: z.string(),
-  STORAGE_USE_SSL: z
-    .string()
-    .default("false")
-    .transform((s) => s !== "false" && s !== "0"),
-  STORAGE_SKIP_BUCKET_CHECK: z
-    .string()
-    .default("false")
-    .transform((s) => s !== "false" && s !== "0"),
+  // Firebase Storage (configuration handled by Admin SDK)
 
   // Crowdin (Optional)
   CROWDIN_PROJECT_ID: z.coerce.number().optional(),
