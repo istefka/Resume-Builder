@@ -1,15 +1,15 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { Prisma, User } from "@prisma/client";
 import { UserWithSecrets } from "@reactive-resume/dto";
 import { ErrorMessage } from "@reactive-resume/utils";
-import { PrismaService } from "nestjs-prisma";
 
+import { DatabaseService } from "../database/database.service";
 import { StorageService } from "../storage/storage.service";
+import { User } from "../types/express";
 
 @Injectable()
 export class UserService {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly database: DatabaseService,
     private readonly storageService: StorageService,
   ) {}
 

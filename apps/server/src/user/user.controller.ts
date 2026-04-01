@@ -11,7 +11,6 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { UpdateUserDto, UserDto } from "@reactive-resume/dto";
 import { ErrorMessage } from "@reactive-resume/utils";
 import type { Response } from "express";
@@ -58,7 +57,7 @@ export class UserController {
         locale: updateUserDto.locale,
       });
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") {
+      if (error.code === 6 || error.message?.includes("already exists")) {
         throw new BadRequestException(ErrorMessage.UserAlreadyExists);
       }
 

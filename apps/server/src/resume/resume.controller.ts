@@ -12,8 +12,6 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { User as UserEntity } from "@prisma/client";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import {
   CreateResumeDto,
   importResumeSchema,
@@ -25,7 +23,8 @@ import { ErrorMessage } from "@reactive-resume/utils";
 import set from "lodash.set";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import { User } from "@/server/user/decorators/user.decorator";
+import { User as UserEntity } from "../types/express";
+import { User } from "../user/decorators/user.decorator";
 
 import { OptionalGuard } from "../auth/guards/optional.guard";
 import { TwoFactorGuard } from "../auth/guards/two-factor.guard";
@@ -49,7 +48,7 @@ export class ResumeController {
     try {
       return await this.resumeService.create(user.id, createResumeDto);
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") {
+      if (error.code === 6 || error.message?.includes("already exists")) {
         throw new BadRequestException(ErrorMessage.ResumeSlugAlreadyExists);
       }
 
@@ -65,7 +64,7 @@ export class ResumeController {
       const result = importResumeSchema.parse(importResumeDto);
       return await this.resumeService.import(user.id, result);
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") {
+      if (error.code === 6 || error.message?.includes("already exists")) {
         throw new BadRequestException(ErrorMessage.ResumeSlugAlreadyExists);
       }
 
